@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/klara_games/static/css/main.15a1c540.css",
+    "main.js": "/klara_games/static/js/main.309b4374.js",
+    "static/js/453.d0405d37.chunk.js": "/klara_games/static/js/453.d0405d37.chunk.js",
+    "static/media/forest2.png": "/klara_games/static/media/forest2.4635af41d52ec65db4a2.png",
+    "static/media/wood_block.png": "/klara_games/static/media/wood_block.594c993670b5b5516660.png",
+    "static/media/logo.svg": "/klara_games/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/klara_games/index.html",
+    "main.15a1c540.css.map": "/klara_games/static/css/main.15a1c540.css.map",
+    "main.309b4374.js.map": "/klara_games/static/js/main.309b4374.js.map",
+    "453.d0405d37.chunk.js.map": "/klara_games/static/js/453.d0405d37.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.15a1c540.css",
+    "static/js/main.309b4374.js"
+  ]
+}
