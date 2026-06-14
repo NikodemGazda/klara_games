@@ -1,0 +1,132 @@
+.leaderboard-container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-container h2 {
+  margin: 0 0 20px 0;
+  font-size: 22px;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.leaderboard-container.error {
+  color: #d32f2f;
+  text-align: center;
+}
+
+.empty-leaderboard {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 20px;
+  margin: 0;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.leaderboard-table thead {
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.leaderboard-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.leaderboard-row:hover {
+  background-color: #f9f9f9;
+}
+
+.rank {
+  font-weight: 600;
+  color: #667eea;
+  width: 60px;
+}
+
+.player-name {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.score {
+  text-align: right;
+  color: #666;
+  font-family: 'Courier New', monospace;
+}
+
+.user-rank-section {
+  background-color: #f0f7ff;
+  border: 2px solid #2196f3;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.user-rank-info {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+}
+
+.user-rank-info .label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #666;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.user-rank-info .rank-value,
+.user-rank-info .score-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2196f3;
+}
+
+@media (max-width: 600px) {
+  .leaderboard-container {
+    padding: 16px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .user-rank-info {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .user-rank-info .label {
+    font-size: 11px;
+  }
+
+  .user-rank-info .rank-value,
+  .user-rank-info .score-value {
+    font-size: 16px;
+  }
+}

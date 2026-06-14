@@ -1,0 +1,7 @@
+Games:
+1. hang man
+2. tic tac toe
+3. picture/GIF puzzle game
+4. sound board
+5. cat location guessing game
+6. what song matches your age

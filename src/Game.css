@@ -1,0 +1,53 @@
+/*We will be taking notes through out the code*/
+
+.games-main {
+  background-image: url(../public/imgs/forest2.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+
+.games-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  align-items: end; /* CHANGED: Anchors all cards to the bottom of the row */
+}
+
+.game-card {
+  display: flex; /* Changed to flex for simple, tight stacking */
+  flex-direction: column;
+  padding: 15px;
+  border-radius: 24px;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.game-card h2 {
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 12px; /* Adds a little space between the title and image */
+  /* Removed margin-top: auto as it's no longer needed */
+}
+
+.game-card:hover {
+  filter: brightness(1.05); 
+  transform: translateY(-4px); 
+  box-shadow: 2px 5px 8px rgba(2, 2, 1, 0.3);
+  /* Removed transition from here */
+}
+
+.game-card img {
+  display: block; /* removes baseline gap under inline images */
+  width: 100%; /* lets the image fill the card width */
+  aspect-ratio: 1/1; /* keep it square */
+  object-fit: cover; /* crop to fill without distortion */
+  border: solid;
+  border-radius: 20px;
+  border-width: 0px; 
+}

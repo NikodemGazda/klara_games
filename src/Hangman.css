@@ -1,0 +1,167 @@
+.hangman-container {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  font-family: "Cinzel", "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #111;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.hangman-container.full-page {
+  min-height: 100vh;
+}
+
+.hangman-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(18, 70, 32, 0.4) 0%,
+    rgba(18, 70, 32, 0.1) 10%,
+    rgba(18, 70, 32, 0) 100%
+  );
+}
+
+.hangman-content {
+  width: 100%;
+  max-width: 1100px;
+}
+
+.hangman-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hangman-title {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.hangman-main {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.hangman-svg-container {
+  flex: 0 0 400px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(156, 175, 136, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  align-self: center;
+}
+
+.hangman-svg-wrapper {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hangman-svg-filter {
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.14));
+}
+
+.hangman-game {
+  flex: 1 1 360px;
+  background: transparent;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+.hangman-word {
+  font-size: 32px;
+  letter-spacing: 6px;
+  text-align: center;
+}
+
+.hangman-stats {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.hangman-time {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.hangman-status {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.hangman-win {
+  color: green;
+}
+
+.hangman-lose {
+  color: crimson;
+}
+
+.hangman-keyboard {
+  margin-top: 16px;
+}
+
+.hangman-row {
+  display: flex;
+  justify-content: center;
+  gap: calc(96px * 0.05);
+  margin-bottom: 8px;
+}
+
+.hangman-button {
+  min-width: 96px;
+  min-height: 64px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background-image: url(../public/imgs/wood_block.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #2b2b2b;
+  box-shadow: none;
+  transform-origin: center bottom;
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 120ms ease;
+  cursor: pointer;
+}
+
+.hangman-button:hover:not(:disabled) {
+  transform: translateY(2px) scale(1.2);
+}
+
+.hangman-button:active:not(:disabled) {
+  transform: translateY(2px) scale(1.2);
+}
+
+.hangman-button.active {
+  transform: translateY(2px) scale(1.2);
+}
+
+.hangman-button:disabled {
+  opacity: 0.6;
+  filter: grayscale(40%);
+  cursor: not-allowed;
+}
