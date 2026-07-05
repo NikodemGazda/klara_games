@@ -1,28 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const { spawn } = require('child_process');
-const path = require('path');
 const jwt = require('jsonwebtoken');
 const { AccountManager } = require('./server/Account');
-const { sendWelcomeEmail, sendPasswordResetEmail, initializeEmailService } = require('./server/emailService');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
-// Initialize email service (configure with Mailtrap or Gmail)
-// IMPORTANT: Set environment variables or update the config below
-// Example for Mailtrap:
-// initializeEmailService({
-//   host: "smtp.mailtrap.io",
-//   port: 2525,
-//   auth: {
-//     user: process.env.MAILTRAP_USER,
-//     pass: process.env.MAILTRAP_PASSWORD
-//   }
-// });
-
-// Allow requests from the React dev server (or any origin in production)
 app.use(cors());
 app.use(express.json());
 
@@ -190,34 +173,18 @@ app.get('/api/leaderboard/:game', (req, res) => {
   }
 });
 
-// ===== EXISTING ROUTES =====
-  const game = req.query.game || 'Unknown';
-  const scriptPath = path.join(__dirname, 'run_game.py');
-
-  // Use environment override if needed (e.g. 'python3' on some systems)
-  const PY_CMD = process.env.PYTHON_CMD || process.env.PYTHON || 'python';
-
-  let out = '';
-  let err = '';
-
-  const py = spawn(PY_CMD, [scriptPath, game]);
-
-  py.stdout.on('data', data => { out += data.toString(); });
-  py.stderr.on('data', data => { err += data.toString(); });
-
-  py.on('error', (e) => {
-    res.status(500).type('text/plain').send(`Failed to start Python: ${e.message}`);
-  });
-
-  py.on('close', code => {
-    if (err) {
-      res.status(500).type('text/plain').send(err + '\n(Ensure Python is installed and in PATH or set PYTHON_CMD)');
-      return;
-    }
-    res.type('text/plain').send(out);
-  });
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Python-runner server listening on http://localhost:${PORT}`);
-});
+// Export for Vercel serverless functions
+module.exports = app;
+
+// Only start server if running locally (not on Vercel)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server listening on http://localhost:${PORT}`);
+  });
+}

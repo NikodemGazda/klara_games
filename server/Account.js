@@ -1,22 +1,20 @@
-const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
+const { Redis } = require('@upstash/redis');
 
-const ACCOUNTS_FILE = path.join(__dirname, 'data', 'accounts.csv');
-const DATA_DIR = path.join(__dirname, 'data');
+const PREFIX = 'account:';
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 class Account {
   constructor(username, password, email = null) {
     this.username = username;
-    this.password = this.hashPassword(password); // Store hashed password
+    this.password = this.hashPassword(password);
     this.email = email || null;
     this.created_at = new Date().toISOString();
-    this.games = {}; // { gameName: [{ score, timestamp }] }
+    this.games = {};
   }
 
   static hashPassword(password) {
@@ -27,16 +25,13 @@ class Account {
     return crypto.createHash('sha256').update(password).digest('hex') === hash;
   }
 
-  // Get best score for a game
   getBestScore(gameName) {
     if (!this.games[gameName] || this.games[gameName].length === 0) {
       return null;
     }
-    // For fastest time, return the minimum
     return Math.min(...this.games[gameName].map(record => record.score));
   }
 
-  // Add a game score
   addScore(gameName, score, time = new Date().toISOString()) {
     if (!this.games[gameName]) {
       this.games[gameName] = [];
@@ -44,61 +39,34 @@ class Account {
     this.games[gameName].push({ score, time });
   }
 
-  // Convert to CSV row format
-  toCsvRow() {
-    return `"${this.username}","${this.password}","${this.email || ''}","${this.created_at}","${JSON.stringify(this.games)}"`;
+  toJSON() {
+    return {
+      username: this.username,
+      password: this.password,
+      email: this.email,
+      created_at: this.created_at,
+      games: this.games,
+    };
   }
 
-  // Convert from CSV row
-  static fromCsvRow(row) {
-    const [username, password, email, created_at, games_json] = this.parseCsvRow(row);
-    const account = new Account(username, 'dummy'); // We'll replace the hash
-    account.password = password;
-    account.email = email || null;
-    account.created_at = created_at;
-    account.games = games_json ? JSON.parse(games_json) : {};
+  static fromJSON(data) {
+    const account = new Account(data.username, 'dummy');
+    account.password = data.password;
+    account.email = data.email;
+    account.created_at = data.created_at;
+    account.games = data.games || {};
     return account;
-  }
-
-  static parseCsvRow(row) {
-    // Simple CSV parser that handles quoted fields
-    const result = [];
-    let current = '';
-    let insideQuotes = false;
-    
-    for (let i = 0; i < row.length; i++) {
-      const char = row[i];
-      if (char === '"') {
-        insideQuotes = !insideQuotes;
-      } else if (char === ',' && !insideQuotes) {
-        result.push(current.trim());
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-    result.push(current.trim());
-    return result;
   }
 }
 
 class AccountManager {
-  static ensureHeaderExists() {
-    if (!fs.existsSync(ACCOUNTS_FILE)) {
-      const header = '"username","password_hash","email","created_at","games_json"\n';
-      fs.writeFileSync(ACCOUNTS_FILE, header, 'utf8');
-    }
-  }
-
-  static createAccount(username, password, email = null) {
-    this.ensureHeaderExists();
-
-    // Check if username exists
-    if (this.accountExists(username)) {
+  static async createAccount(username, password, email = null) {
+    const key = PREFIX + username;
+    const existing = await redis.get(key);
+    if (existing) {
       throw new Error('Username already exists');
     }
 
-    // Validate username and password
     if (!username || username.length < 3) {
       throw new Error('Username must be at least 3 characters');
     }
@@ -107,64 +75,52 @@ class AccountManager {
     }
 
     const account = new Account(username, password, email);
-    const csvRow = account.toCsvRow();
-    
-    fs.appendFileSync(ACCOUNTS_FILE, csvRow + '\n', 'utf8');
+    await redis.set(key, JSON.stringify(account.toJSON()));
     return account;
   }
 
-  static getAccount(username) {
-    this.ensureHeaderExists();
-    const lines = fs.readFileSync(ACCOUNTS_FILE, 'utf8').split('\n');
-    
-    for (let i = 1; i < lines.length; i++) { // Skip header
-      if (lines[i].trim() === '') continue;
-      const account = Account.fromCsvRow(lines[i]);
-      if (account.username === username) {
-        return account;
-      }
-    }
-    return null;
+  static async getAccount(username) {
+    const data = await redis.get(PREFIX + username);
+    if (!data) return null;
+    return Account.fromJSON(typeof data === 'string' ? JSON.parse(data) : data);
   }
 
-  static accountExists(username) {
-    return this.getAccount(username) !== null;
+  static async accountExists(username) {
+    return await this.getAccount(username) !== null;
   }
 
-  static verifyLogin(username, password) {
-    const account = this.getAccount(username);
-    if (!account) {
-      return null;
-    }
+  static async verifyLogin(username, password) {
+    const account = await this.getAccount(username);
+    if (!account) return null;
     if (Account.verifyPassword(password, account.password)) {
       return account;
     }
     return null;
   }
 
-  static saveAccount(account) {
-    this.ensureHeaderExists();
-    const lines = fs.readFileSync(ACCOUNTS_FILE, 'utf8').split('\n');
-    
-    for (let i = 1; i < lines.length; i++) {
-      if (lines[i].trim() === '') continue;
-      const currentAccount = Account.fromCsvRow(lines[i]);
-      if (currentAccount.username === account.username) {
-        lines[i] = account.toCsvRow();
-        fs.writeFileSync(ACCOUNTS_FILE, lines.join('\n'), 'utf8');
-        return;
-      }
-    }
+  static async saveAccount(account) {
+    const key = PREFIX + account.username;
+    await redis.set(key, JSON.stringify(account.toJSON()));
   }
 
-  static getLeaderboard(gameName, limit = 5) {
-    this.ensureHeaderExists();
-    const lines = fs.readFileSync(ACCOUNTS_FILE, 'utf8').split('\n');
-    const scores = [];
+  static async getLeaderboard(gameName, limit = 5) {
+    const keys = [];
+    let cursor = 0;
+    
+    do {
+      const result = await redis.scan(cursor, {
+        match: PREFIX + '*',
+        count: 100,
+      });
+      cursor = result.cursor;
+      keys.push(...result.keys);
+    } while (cursor !== 0);
 
-    for (let i = 1; i < lines.length; i++) {
-      if (lines[i].trim() === '') continue;
-      const account = Account.fromCsvRow(lines[i]);
+    const scores = [];
+    for (const key of keys) {
+      const data = await redis.get(key);
+      if (!data) continue;
+      const account = Account.fromJSON(typeof data === 'string' ? JSON.parse(data) : data);
       const bestScore = account.getBestScore(gameName);
       if (bestScore !== null) {
         scores.push({
@@ -174,13 +130,12 @@ class AccountManager {
       }
     }
 
-    // Sort by score (ascending for time-based, where lower is better)
     scores.sort((a, b) => a.score - b.score);
     return scores.slice(0, limit);
   }
 
-  static getUserRank(gameName, username) {
-    const leaderboard = this.getLeaderboard(gameName, 1000); // Get a large list
+  static async getUserRank(gameName, username) {
+    const leaderboard = await this.getLeaderboard(gameName, 1000);
     const index = leaderboard.findIndex(entry => entry.username === username);
     if (index === -1) {
       return null;

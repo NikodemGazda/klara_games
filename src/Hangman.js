@@ -83,7 +83,7 @@ export default function Hangman({ fullPage = false }) {
       return;
     }
 
-    fetch('http://localhost:5000/api/scores', {
+    fetch('/api/scores', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

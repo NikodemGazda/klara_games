@@ -15,7 +15,7 @@ export default function Leaderboard({ gameName }) {
         setLoading(true);
         const query = user ? `?username=${user.username}` : '';
         const response = await fetch(
-          `http://localhost:5000/api/leaderboard/${gameName}${query}`
+          `/api/leaderboard/${gameName}${query}`
         );
 
         if (!response.ok) {
