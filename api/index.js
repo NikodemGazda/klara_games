@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Register
-app.post('/api/auth/register', async (req, res) => {
+app.post('/auth/register', async (req, res) => {
   try {
     const { username, password, confirmPassword, email } = req.body;
     
@@ -31,12 +31,13 @@ app.post('/api/auth/register', async (req, res) => {
       message: email ? 'Account created! Check your email for confirmation.' : 'Account created successfully!',
     });
   } catch (error) {
+    console.error('Register error:', error);
     res.status(400).json({ error: error.message });
   }
 });
 
 // Login
-app.post('/api/auth/login', async (req, res) => {
+app.post('/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -56,12 +57,13 @@ app.post('/api/auth/login', async (req, res) => {
       username,
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Forgot password
-app.post('/api/auth/forgot-password', async (req, res) => {
+app.post('/auth/forgot-password', async (req, res) => {
   try {
     const { username } = req.body;
     
@@ -81,12 +83,13 @@ app.post('/api/auth/forgot-password', async (req, res) => {
       message: 'If an account with this username and email exists, a password reset email has been sent.',
     });
   } catch (error) {
+    console.error('Forgot password error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Save score
-app.post('/api/scores', async (req, res) => {
+app.post('/scores', async (req, res) => {
   try {
     const { username, gameName, score } = req.body;
     
@@ -107,12 +110,13 @@ app.post('/api/scores', async (req, res) => {
       bestScore: account.getBestScore(gameName),
     });
   } catch (error) {
+    console.error('Save score error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Get leaderboard
-app.get('/api/leaderboard/:game', async (req, res) => {
+app.get('/leaderboard/:game', async (req, res) => {
   try {
     const { game } = req.params;
     const { username } = req.query;
@@ -130,12 +134,13 @@ app.get('/api/leaderboard/:game', async (req, res) => {
       userRank,
     });
   } catch (error) {
+    console.error('Leaderboard error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Get profile
-app.get('/api/profile/:username', async (req, res) => {
+app.get('/profile/:username', async (req, res) => {
   try {
     const { username } = req.params;
     const account = await AccountManager.getAccount(username);
@@ -151,18 +156,15 @@ app.get('/api/profile/:username', async (req, res) => {
       games: account.games,
     });
   } catch (error) {
+    console.error('Profile error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-module.exports = async (req, res) => {
-  console.log('=== API REQUEST ===');
-  console.log('URL:', req.url);
-  console.log('Method:', req.method);
-  app(req, res);
-};
+// Export for Vercel serverless functions
+module.exports = app;
