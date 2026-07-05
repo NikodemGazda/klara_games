@@ -17,20 +17,20 @@ export default function CreateAccount() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!username || username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+    if (!username || username.length < 5) {
+      newErrors.username = 'Username must be at least 5 characters.';
     }
 
     if (!password || password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = 'Password must be at least 6 characters.';
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = 'Passwords do not match. Please try again.';
     }
 
     if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Please enter a valid email address.';
     }
 
     return newErrors;
@@ -50,7 +50,7 @@ export default function CreateAccount() {
 
     try {
       await register(username, password, confirmPassword, email);
-      setSuccessMessage('Account created successfully! Redirecting...');
+      setSuccessMessage('You now have an account! Enjoy and Have Fun!!');
       setTimeout(() => {
         navigate('/games');
       }, 2000);

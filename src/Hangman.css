@@ -88,6 +88,7 @@
   font-size: 32px;
   letter-spacing: 6px;
   text-align: center;
+  font-family: "Dancing Script", cursive
 }
 
 .hangman-stats {
@@ -109,11 +110,11 @@
 }
 
 .hangman-win {
-  color: green;
+  color: rgb(97, 227, 97);
 }
 
 .hangman-lose {
-  color: crimson;
+  color: rgb(225, 5, 49);
 }
 
 .hangman-keyboard {

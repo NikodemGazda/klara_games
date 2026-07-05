@@ -95,7 +95,7 @@ export default function Hangman({ fullPage = false }) {
         gameName: 'hangman',
         score: finalTime,
       }),
-    }).catch(err => console.error('Error submitting score:', err));
+    }).catch(err => console.error('Something went wrong. Please try again, sorry that it is not working. :', err));
   }
 
   function handleGuess(letter) {
@@ -168,8 +168,8 @@ export default function Hangman({ fullPage = false }) {
               )}
 
               <div className="hangman-status">
-                {isWin && <div className="hangman-win">You won! 🎉</div>}
-                {isLose && <div className="hangman-lose">You lost — word was: {target}</div>}
+                {isWin && <div className="hangman-win">You won! Good Job!! 🎉</div>}
+                {isLose && <div className="hangman-lose">You couldn't find this word... YET. One day you will get it 🙂! The word was: {target}</div>}
               </div>
 
               <div className="hangman-keyboard">
