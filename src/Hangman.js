@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 import Leaderboard from './Leaderboard';
 
 const WORDS = [
-  'forest','tree','leaf','bark','branch','trunk','moss','fern','pine','oak','maple','birch','willow','cedar','spruce','fir','acorn','pinecone','cone','stump','roots','sapling','seedling','canopy','undergrowth','grove','glade','clearing','meadow','path','trail','river','stream','brook','waterfall','pond','lake','stone','rock','boulder','hill','valley','cliff','cave','mossy','orchard','blossom','bud','budburst','flower','rose','lily','tulip','daisy','sunflower','marigold','iris','violet','peony','daffodil','poppy','dandelion','petal','stem','orchid','blossom','apple','pear','plum','peach','cherry','grape','orange','lemon','lime','banana','strawberry','blueberry','raspberry','blackberry','cranberry','fig','melon','kiwi','nectarine','coconut','mushroom','toadstool','fungus','squirrel','rabbit','deer','fox','wolf','bear','owl','hawk','woodpecker','robin','raccoon','hedgehog','badger','insect','butterfly','bee','dragonfly','ant','spider','nest','twig','soil','earth','shade','sunlight','rain','mist','fog','dew','breeze','wind','unicorn','fairy','elf','wizard','dragon','goblin','troll','castle','magic','spell','wand','potion','pixie','griffin','phoenix','myth','enchanted','mystic'
+  'forest','tree','leaf','bark','branch','trunk','moss','fern','pine','oak','maple','birch','willow','cedar','spruce','fir','acorn','pinecone','cone','stump','roots','sapling','seedling','canopy','undergrowth','grove','glade','clearing','meadow','path','trail','river','stream','brook','waterfall','pond','lake','stone','rock','boulder','hill','valley','cliff','cave','mossy','orchard','blossom','bud','budburst','flower','rose','lily','tulip','daisy','sunflower','marigold','iris','violet','peony','daffodil','poppy','dandelion','petal','stem','orchid','blossom','apple','pear','plum','peach','cherry','grape','orange','lemon','lime','banana','strawberry','blueberry','raspberry','blackberry','cranberry','fig','melon','kiwi','nectarine','coconut','mushroom','toadstool','fungus','squirrel','rabbit','deer','fox','wolf','bear','owl','hawk','woodpecker','robin','raccoon','hedgehog','badger','insect','butterfly','bee','dragonfly','ant','spider','nest','twig','soil','earth','shade','sunlight','rain','mist','fog','dew','breeze','wind','unicorn','fairy','elf','wizard','dragon','goblin','troll','castle','magic','spell','wand','potion','pixie','griffin','phoenix','myth','enchanted','mystic','moon','star','sky','cloud','snow','ice','frost','rainbow','shadow','light','dark','glow','sparkle','shiny','crystal','gem','feather','feathers','vine','ivy','thorn','bush','grass','reed','log','hollow','web','webs','shell','nut','berry','beetle','snail','slug','worm','frog','toad','snake','lizard','mouse','rat','mole','beaver','otter','duck','goose','swan','crow','raven','bat','moth','caterpillar','cricket','grasshopper','ladybug','witch','giant','mermaid','merman','ghost','spirit','monster','ogre','knight','king','queen','prince','princess','crown','throne','sword','shield','armor','treasure','gold','silver','coin','key','lock','door','gate','tower','bridge','map','book','scroll','ring','necklace','amulet','crystalball','orb','cloak','hood','boots','hat','cape','candle','flame','fire','ember','smoke','ash','dust','echo','whisper','secret','wish','dream','luck','fortune','surprise','adventure','journey','campfire','torch','lantern','rope','basket','bucket','barrel','fence','gatehouse','hut','cabin','tent','camp','campground','picnic','bench','statue','fountain'
 ];
 const QWERTY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
@@ -51,7 +51,7 @@ export default function Hangman({ fullPage = false }) {
         const isLose = wrongCount >= MAX_WRONG;
         
         if (isWin || isLose) {
-          alert("Click 'New Word' to start again");
+          alert("Want to play again? Press New Word.");
           return;
         }
         
@@ -66,6 +66,7 @@ export default function Hangman({ fullPage = false }) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guesses, wrongCount, target]);
 
   function resetGame() {
@@ -79,11 +80,11 @@ export default function Hangman({ fullPage = false }) {
 
   function submitScore(finalTime) {
     if (!user || isGuest) {
-      console.log('Guest mode - not submitting score');
-      return;
+      console.log('Sorry. It looks like you do not have an account, so we can not show your score online. If you want to show your score make an account.Sorry. It looks like you do not have an account, so we can not show your score online. If you want to show your score make an account.');
+      return; 
     }
 
-    fetch('/api/scores', {
+    fetch('http://localhost:5000/api/scores', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -116,20 +117,24 @@ export default function Hangman({ fullPage = false }) {
 
   // Submit score when player wins
   useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
     const revealed = target.split('').map(l => (guesses.has(l) ? l : '_')).join(' ');
     const isWin = target.split('').every(l => guesses.has(l));
     
     if (isWin && startTime && target) {
       const finalTime = (Date.now() - startTime) / 1000; // Convert to seconds
       setGameTime(finalTime);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       submitScore(finalTime);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guesses, target, startTime]);
 
   const revealed = target.split('').map(l => (guesses.has(l) ? l : '_')).join(' ');
   const isWin = target.split('').every(l => guesses.has(l));
   const isLose = wrongCount >= MAX_WRONG;
 
+  // eslint-disable-next-line no-unused-vars
   const containerMinHeight = fullPage ? 'calc(100vh - 120px)' : undefined;
 
   return (
