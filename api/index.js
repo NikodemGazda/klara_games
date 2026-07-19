@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Register
-app.post('/auth/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, password, confirmPassword, email } = req.body;
     
@@ -42,7 +42,7 @@ app.post('/auth/register', async (req, res) => {
 });
 
 // Login
-app.post('/auth/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -68,7 +68,7 @@ app.post('/auth/login', async (req, res) => {
 });
 
 // Forgot password
-app.post('/auth/forgot-password', async (req, res) => {
+app.post('/api/auth/forgot-password', async (req, res) => {
   try {
     const { username } = req.body;
     
@@ -94,7 +94,7 @@ app.post('/auth/forgot-password', async (req, res) => {
 });
 
 // Save score
-app.post('/scores', async (req, res) => {
+app.post('/api/scores', async (req, res) => {
   try {
     const { username, gameName, score } = req.body;
     
@@ -121,7 +121,7 @@ app.post('/scores', async (req, res) => {
 });
 
 // Get leaderboard
-app.get('/leaderboard/:game', async (req, res) => {
+app.get('/api/leaderboard/:game', async (req, res) => {
   try {
     const { game } = req.params;
     const { username } = req.query;
@@ -145,7 +145,7 @@ app.get('/leaderboard/:game', async (req, res) => {
 });
 
 // Get profile
-app.get('/profile/:username', async (req, res) => {
+app.get('/api/profile/:username', async (req, res) => {
   try {
     const { username } = req.params;
     const account = await AccountManager.getAccount(username);
@@ -167,12 +167,12 @@ app.get('/profile/:username', async (req, res) => {
 });
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
 // Diagnostic endpoint - check Redis connection
-app.get('/diag', async (req, res) => {
+app.get('/api/diag', async (req, res) => {
   const diag = {
     env: {
       has_kv_url: !!process.env.KV_REST_API_URL,
