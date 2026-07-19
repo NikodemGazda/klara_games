@@ -24,7 +24,7 @@ try {
 class Account {
   constructor(username, password, email = null) {
     this.username = username;
-    this.password = this.hashPassword(password);
+    this.password = Account.hashPassword(password);
     this.email = email || null;
     this.created_at = new Date().toISOString();
     this.games = {};
