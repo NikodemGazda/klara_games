@@ -158,6 +158,15 @@ class AccountManager {
       score: leaderboard[index].score,
     };
   }
+
+  static async testConnection() {
+    try {
+      const result = await redis.ping();
+      return { success: true, result };
+    } catch (error) {
+      return { success: false, error: error.message, name: error.name };
+    }
+  }
 }
 
 module.exports = { Account, AccountManager };

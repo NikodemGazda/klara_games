@@ -171,5 +171,33 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Diagnostic endpoint - check Redis connection
+app.get('/diag', async (req, res) => {
+  const diag = {
+    env: {
+      has_kv_url: !!process.env.KV_REST_API_URL,
+      has_kv_token: !!process.env.KV_REST_API_TOKEN,
+      has_upstash_url: !!process.env.UPSTASH_REDIS_REST_URL,
+      has_upstash_token: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+      node_version: process.version,
+    },
+    redis: null,
+    account_module: null,
+  };
+
+  try {
+    const { AccountManager, Account } = require('../server/Account');
+    diag.account_module = { loaded: true };
+
+    // Test Redis ping
+    const pingResult = await AccountManager.testConnection();
+    diag.redis = { ping: pingResult };
+  } catch (error) {
+    diag.redis = { error: error.message, name: error.name, stack: error.stack?.split('\n').slice(0, 3).join('\n') };
+  }
+
+  res.json(diag);
+});
+
 // Export for Vercel serverless functions
 module.exports = app;
