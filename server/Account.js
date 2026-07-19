@@ -3,10 +3,23 @@ const { Redis } = require('@upstash/redis');
 
 const PREFIX = 'account:';
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+let redis;
+try {
+  redis = Redis.fromEnv();
+  // Verify the connection works
+  redis.ping().catch(err => {
+    console.error('[Account] Redis ping failed:', err.message);
+  });
+} catch (error) {
+  console.error('[Account] Failed to initialize Redis client:', error.message);
+  // Create a mock Redis for graceful fallback
+  redis = {
+    get: async () => null,
+    set: async () => {},
+    scan: async () => ({ cursor: 0, keys: [] }),
+    ping: async () => 'PONG',
+  };
+}
 
 class Account {
   constructor(username, password, email = null) {

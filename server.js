@@ -12,7 +12,7 @@ app.use(express.json());
 // ===== AUTHENTICATION ROUTES =====
 
 // Register a new account
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, password, confirmPassword, email } = req.body;
 
@@ -24,7 +24,7 @@ app.post('/api/auth/register', (req, res) => {
       return res.status(400).json({ error: 'Passwords do not match' });
     }
 
-    const account = AccountManager.createAccount(username, password, email || null);
+    const account = await AccountManager.createAccount(username, password, email || null);
 
     // Send welcome email if email provided
     if (email) {
@@ -43,12 +43,18 @@ app.post('/api/auth/register', (req, res) => {
       message: email ? 'Account created! Check your email for confirmation.' : 'Account created successfully!',
     });
   } catch (error) {
+    console.error('=== REGISTER ERROR ===');
+    console.error('Name:', error.name);
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
+    if (error.cause) console.error('Cause:', error.cause);
+    console.error('=== END REGISTER ERROR ===');
     res.status(400).json({ error: error.message });
   }
 });
 
 // Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -56,7 +62,7 @@ app.post('/api/auth/login', (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const account = AccountManager.verifyLogin(username, password);
+    const account = await AccountManager.verifyLogin(username, password);
     if (!account) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
@@ -69,12 +75,18 @@ app.post('/api/auth/login', (req, res) => {
       username,
     });
   } catch (error) {
+    console.error('=== LOGIN ERROR ===');
+    console.error('Name:', error.name);
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
+    if (error.cause) console.error('Cause:', error.cause);
+    console.error('=== END LOGIN ERROR ===');
     res.status(500).json({ error: error.message });
   }
 });
 
 // Forgot password
-app.post('/api/auth/forgot-password', (req, res) => {
+app.post('/api/auth/forgot-password', async (req, res) => {
   try {
     const { username } = req.body;
 
@@ -82,7 +94,7 @@ app.post('/api/auth/forgot-password', (req, res) => {
       return res.status(400).json({ error: 'Username is required' });
     }
 
-    const account = AccountManager.getAccount(username);
+    const account = await AccountManager.getAccount(username);
     if (!account || !account.email) {
       return res.status(400).json({
         error: 'No account found with this username, or no email on file. Password recovery is not available.',
@@ -99,15 +111,21 @@ app.post('/api/auth/forgot-password', (req, res) => {
 
     // Note: In production, implement proper password reset tokens
   } catch (error) {
+    console.error('=== FORGOT PASSWORD ERROR ===');
+    console.error('Name:', error.name);
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
+    if (error.cause) console.error('Cause:', error.cause);
+    console.error('=== END FORGOT PASSWORD ERROR ===');
     res.status(500).json({ error: error.message });
   }
 });
 
 // Get user profile and best scores
-app.get('/api/profile/:username', (req, res) => {
+app.get('/api/profile/:username', async (req, res) => {
   try {
     const { username } = req.params;
-    const account = AccountManager.getAccount(username);
+    const account = await AccountManager.getAccount(username);
 
     if (!account) {
       return res.status(404).json({ error: 'User not found' });
@@ -125,7 +143,7 @@ app.get('/api/profile/:username', (req, res) => {
 });
 
 // Save game score
-app.post('/api/scores', (req, res) => {
+app.post('/api/scores', async (req, res) => {
   try {
     const { username, gameName, score } = req.body;
 
@@ -133,13 +151,13 @@ app.post('/api/scores', (req, res) => {
       return res.status(400).json({ error: 'username, gameName, and score are required' });
     }
 
-    const account = AccountManager.getAccount(username);
+    const account = await AccountManager.getAccount(username);
     if (!account) {
       return res.status(404).json({ error: 'User not found' });
     }
 
     account.addScore(gameName, score);
-    AccountManager.saveAccount(account);
+    await AccountManager.saveAccount(account);
 
     res.json({
       success: true,
@@ -151,16 +169,16 @@ app.post('/api/scores', (req, res) => {
 });
 
 // Get leaderboard for a game
-app.get('/api/leaderboard/:game', (req, res) => {
+app.get('/api/leaderboard/:game', async (req, res) => {
   try {
     const { game } = req.params;
     const { username } = req.query;
 
-    const leaderboard = AccountManager.getLeaderboard(game, 5);
+    const leaderboard = await AccountManager.getLeaderboard(game, 5);
 
     let userRank = null;
     if (username) {
-      userRank = AccountManager.getUserRank(game, username);
+      userRank = await AccountManager.getUserRank(game, username);
     }
 
     res.json({

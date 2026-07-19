@@ -31,7 +31,12 @@ app.post('/auth/register', async (req, res) => {
       message: email ? 'Account created! Check your email for confirmation.' : 'Account created successfully!',
     });
   } catch (error) {
-    console.error('Register error:', error);
+    console.error('=== REGISTER ERROR ===');
+    console.error('Name:', error.name);
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
+    if (error.cause) console.error('Cause:', error.cause);
+    console.error('=== END REGISTER ERROR ===');
     res.status(400).json({ error: error.message });
   }
 });
