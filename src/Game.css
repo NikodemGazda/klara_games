@@ -6,7 +6,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 
@@ -16,6 +16,23 @@
   gap: 20px;
   padding: 20px;
   align-items: end; /* CHANGED: Anchors all cards to the bottom of the row */
+}
+
+/* On small screens, allow cards to shrink narrower */
+@media (max-width: 500px) {
+  .games-section {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .game-card {
+    padding: 10px;
+  }
+
+  .game-card h2 {
+    font-size: clamp(14px, 4vw, 18px);
+  }
 }
 
 .game-card {

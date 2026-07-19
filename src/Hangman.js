@@ -10,7 +10,7 @@ const QWERTY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
 function HangmanSVG({ wrong }) {
   return (
-    <svg width="160" height="240" viewBox="0 0 160 240" aria-hidden>
+    <svg width="100%" height="100%" viewBox="0 0 160 240" aria-hidden style={{ maxWidth: 160, maxHeight: 240 }}>
       <line x1="20" y1="220" x2="140" y2="220" stroke="#333" strokeWidth="4" />
       <line x1="40" y1="20" x2="40" y2="220" stroke="#333" strokeWidth="4" />
       <line x1="40" y1="20" x2="110" y2="20" stroke="#333" strokeWidth="4" />
@@ -135,7 +135,7 @@ export default function Hangman({ fullPage = false }) {
   const isLose = wrongCount >= MAX_WRONG;
 
   // eslint-disable-next-line no-unused-vars
-  const containerMinHeight = fullPage ? 'calc(100vh - 120px)' : undefined;
+  const containerMinHeight = fullPage ? 'calc(100dvh - 120px)' : undefined;
 
   return (
     <>
