@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Hangman.css';
 import { useAuth } from './AuthContext';
 import Leaderboard from './Leaderboard';
+import publicAsset from './publicAsset';
 
 const WORDS = [
   'forest','tree','leaf','bark','branch','trunk','moss','fern','pine','oak','maple','birch','willow','cedar','spruce','fir','acorn','pinecone','cone','stump','roots','sapling','seedling','canopy','undergrowth','grove','glade','clearing','meadow','path','trail','river','stream','brook','waterfall','pond','lake','stone','rock','boulder','hill','valley','cliff','cave','mossy','orchard','blossom','bud','budburst','flower','rose','lily','tulip','daisy','sunflower','marigold','iris','violet','peony','daffodil','poppy','dandelion','petal','stem','orchid','blossom','apple','pear','plum','peach','cherry','grape','orange','lemon','lime','banana','strawberry','blueberry','raspberry','blackberry','cranberry','fig','melon','kiwi','nectarine','coconut','mushroom','toadstool','fungus','squirrel','rabbit','deer','fox','wolf','bear','owl','hawk','woodpecker','robin','raccoon','hedgehog','badger','insect','butterfly','bee','dragonfly','ant','spider','nest','twig','soil','earth','shade','sunlight','rain','mist','fog','dew','breeze','wind','unicorn','fairy','elf','wizard','dragon','goblin','troll','castle','magic','spell','wand','potion','pixie','griffin','phoenix','myth','enchanted','mystic','moon','star','sky','cloud','snow','ice','frost','rainbow','shadow','light','dark','glow','sparkle','shiny','crystal','gem','feather','feathers','vine','ivy','thorn','bush','grass','reed','log','hollow','web','webs','shell','nut','berry','beetle','snail','slug','worm','frog','toad','snake','lizard','mouse','rat','mole','beaver','otter','duck','goose','swan','crow','raven','bat','moth','caterpillar','cricket','grasshopper','ladybug','witch','giant','mermaid','merman','ghost','spirit','monster','ogre','knight','king','queen','prince','princess','crown','throne','sword','shield','armor','treasure','gold','silver','coin','key','lock','door','gate','tower','bridge','map','book','scroll','ring','necklace','amulet','crystalball','orb','cloak','hood','boots','hat','cape','candle','flame','fire','ember','smoke','ash','dust','echo','whisper','secret','wish','dream','luck','fortune','surprise','adventure','journey','campfire','torch','lantern','rope','basket','bucket','barrel','fence','gatehouse','hut','cabin','tent','camp','campground','picnic','bench','statue','fountain'
@@ -181,6 +182,7 @@ export default function Hangman({ fullPage = false }) {
                       return (
                         <button
                             key={letter}
+                            style={{ backgroundImage: `url(${publicAsset('imgs/wood_block.png')})` }}
                             onMouseDown={() => setActiveKey(letter)}
                             onMouseUp={() => { setActiveKey(null); handleGuess(letter); }}
                             onMouseLeave={() => { setActiveKey(null); setHoverKey(null); }}

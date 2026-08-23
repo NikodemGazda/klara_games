@@ -5,7 +5,7 @@
   overflow: hidden;
   padding: clamp(8px, 3vw, 24px);
   position: relative;
-  font-family: "Cinzel", "Cormorant Garamond", Georgia, serif;
+  font: "Amatic sc";
   font-weight: 700;
   text-transform: capitalize;
   color: #111;
@@ -110,7 +110,7 @@
   font-size: clamp(20px, 5vw, 36px);
   letter-spacing: clamp(3px, 1.5vw, 6px);
   text-align: center;
-  font-family: "Dancing Script", cursive;
+  font: "Amatic sc";
   word-break: break-all;
 }
 
@@ -135,11 +135,11 @@
 }
 
 .hangman-win {
-  color: rgb(97, 227, 97);
+  color: rgb(0, 0, 0);
 }
 
 .hangman-lose {
-  color: rgb(225, 5, 49);
+  color: rgb(0, 0, 0);
 }
 
 .hangman-keyboard {
@@ -160,7 +160,6 @@
   padding: 4px 6px;
   border-radius: 8px;
   border: none;
-  background-image: url(../public/imgs/wood_block.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

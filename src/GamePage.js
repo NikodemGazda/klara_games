@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Hangman from './Hangman';
+import publicAsset from './publicAsset';
 
 export default function GamePage() {
   const { slug } = useParams();
@@ -29,7 +30,7 @@ export default function GamePage() {
   }
 
   const hangmanBackgroundStyle = slug === 'hang-man' ? {
-    backgroundImage: 'url(/imgs/forest.png)',
+    backgroundImage: `url(${publicAsset('imgs/forest.png')})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center top',
     backgroundRepeat: 'no-repeat',

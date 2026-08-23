@@ -1,19 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Game.css';
+import publicAsset from './publicAsset';
 
 export default function Games() {
   const games = [
-      { title: 'Hang Man', img_path: 'imgs/ai.png' },
-      { title: 'Tic Tac Toe', img_path: 'imgs/ai2.png' },
-      { title: 'Picture puzzle game', img_path: 'imgs/bed.png' },
-      { title: 'Sound Board', img_path: 'imgs/floor.png' },
-      { title: 'Cat Location Guessing Game', img_path: 'imgs/tilt.png' },
-      { title: 'What song matches your age?', img_path: 'imgs/table.png' },
+      { title: 'Hang Man', img_path: publicAsset('imgs/ai.png') },
+      { title: 'Tic Tac Toe', img_path: publicAsset('imgs/ai2.png') },
+      { title: 'Picture puzzle game', img_path: publicAsset('imgs/bed.png') },
+      { title: 'Sound Board', img_path: publicAsset('imgs/floor.png') },
+      { title: 'Cat Location Guessing Game', img_path: publicAsset('imgs/tilt.png') },
+      { title: 'What song matches your age?', img_path: publicAsset('imgs/table.png') },
   ];
 
   return (
-    <main className="games-main">
+    <main
+      className="games-main"
+      style={{ backgroundImage: `url(${publicAsset('imgs/forest2.png')})` }}
+    >
       <h1>Browse Our Selection</h1>
       <section className="games-section">
         {
@@ -31,7 +35,7 @@ export default function Games() {
   );
 }
 
-function GameCard({ title='sample-title', img_path='imgs/ai.png' }) {
+function GameCard({ title='sample-title', img_path=publicAsset('imgs/ai.png') }) {
   return (
     <div className="game-card">
       <h2>{title }</h2>
