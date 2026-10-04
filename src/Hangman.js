@@ -9,21 +9,49 @@ const WORDS = [
 ];
 const QWERTY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
-function HangmanSVG({ wrong }) {
-  return (
-    <svg width="100%" height="100%" viewBox="0 0 160 240" aria-hidden style={{ maxWidth: 160, maxHeight: 240 }}>
-      <line x1="20" y1="220" x2="140" y2="220" stroke="#333" strokeWidth="4" />
-      <line x1="40" y1="20" x2="40" y2="220" stroke="#333" strokeWidth="4" />
-      <line x1="40" y1="20" x2="110" y2="20" stroke="#333" strokeWidth="4" />
-      <line x1="110" y1="20" x2="110" y2="40" stroke="#333" strokeWidth="4" />
+// The fairy is revealed one part at a time instead of the classic stick figure.
+// Every file in `public/imgs/fairy parts/` is a crop of the SAME artwork drawn
+// at the SAME scale (a 313x305 master frame), so we can rebuild the full fairy
+// by lining the crops up on a shared canvas. The `left`/`top`/`width`/`height`
+// values below are percentages of that 313x305 master and were measured from
+// the source PNGs, which keeps each newly revealed part in the right place
+// (e.g. the head stays put once the body appears).
+const FAIRY_MASTER_WIDTH = 313;
+const FAIRY_MASTER_HEIGHT = 305;
 
-      {wrong > 0 && <circle cx="110" cy="60" r="16" stroke="#111" strokeWidth="3" fill="transparent" />}
-      {wrong > 1 && <line x1="110" y1="76" x2="110" y2="130" stroke="#111" strokeWidth="3" />}
-      {wrong > 2 && <line x1="110" y1="90" x2="90" y2="110" stroke="#111" strokeWidth="3" />}
-      {wrong > 3 && <line x1="110" y1="90" x2="130" y2="110" stroke="#111" strokeWidth="3" />}
-      {wrong > 4 && <line x1="110" y1="130" x2="95" y2="165" stroke="#111" strokeWidth="3" />}
-      {wrong > 5 && <line x1="110" y1="130" x2="125" y2="165" stroke="#111" strokeWidth="3" />}
-    </svg>
+const FAIRY_STAGES = [
+  { file: 'fairy_head.png', left: 29.712, top: 7.869, width: 37.06, height: 40 },
+  { file: 'fairy_body.png', left: 23.003, top: 2.623, width: 48.882, height: 80.984 },
+  { file: 'fairy_left_wing.png', left: 0.319, top: 0, width: 71.565, height: 83.607 },
+  { file: 'fairy_right_wing.png', left: 0.319, top: 0.328, width: 99.361, height: 83.279 },
+  { file: 'fairy_left_leg.png', left: 0.319, top: 0.328, width: 99.361, height: 99.344 },
+  { file: 'fairy_all.png', left: 0, top: 0, width: 100, height: 100 },
+];
+
+function Fairy({ wrong }) {
+  const stage = wrong > 0 ? FAIRY_STAGES[Math.min(wrong, FAIRY_STAGES.length) - 1] : null;
+
+  return (
+    <div
+      className="fairy-frame"
+      style={{ aspectRatio: `${FAIRY_MASTER_WIDTH} / ${FAIRY_MASTER_HEIGHT}` }}
+    >
+      {stage && (
+        <img
+          key={stage.file}
+          className="fairy-image"
+          src={publicAsset(`imgs/fairy parts/${stage.file}`)}
+          alt=""
+          draggable={false}
+          style={{
+            left: `${stage.left}%`,
+            top: `${stage.top}%`,
+            width: `${stage.width}%`,
+            height: `${stage.height}%`,
+          }}
+        />
+      )}
+    </div>
   );
 }
 
@@ -155,7 +183,7 @@ export default function Hangman({ fullPage = false }) {
             <div className="hangman-svg-container">
               <div className="hangman-svg-wrapper">
                 <div className="hangman-svg-filter">
-                  <HangmanSVG wrong={wrongCount} />
+                  <Fairy wrong={wrongCount} />
                 </div>
               </div>
             </div>

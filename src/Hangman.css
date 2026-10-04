@@ -77,18 +77,38 @@
 .hangman-svg-wrapper {
   width: 100%;
   max-width: 400px;
-  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
 }
 
-.hangman-svg-wrapper svg {
+/* Shared canvas the fairy parts are positioned on (matches the source artwork) */
+.fairy-frame {
+  position: relative;
   width: 100%;
-  height: 100%;
-  max-width: 200px;
-  max-height: 260px;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.fairy-image {
+  position: absolute;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  animation: fairy-pop 260ms ease-out;
+}
+
+@keyframes fairy-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .hangman-svg-filter {
@@ -96,6 +116,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .hangman-game {
