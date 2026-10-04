@@ -10,7 +10,7 @@ const WORDS = [
 const QWERTY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
 // The fairy is revealed one part at a time instead of the classic stick figure.
-// Every file in `public/imgs/fairy parts/` is a crop of the SAME artwork drawn
+// Every file in `public/imgs/fairy_parts/` is a crop of the SAME artwork drawn
 // at the SAME scale (a 313x305 master frame), so we can rebuild the full fairy
 // by lining the crops up on a shared canvas. The `left`/`top`/`width`/`height`
 // values below are percentages of that 313x305 master and were measured from
@@ -40,7 +40,7 @@ function Fairy({ wrong }) {
         <img
           key={stage.file}
           className="fairy-image"
-          src={publicAsset(`imgs/fairy parts/${stage.file}`)}
+          src={publicAsset(`imgs/fairy_parts/${stage.file}`)}
           alt=""
           draggable={false}
           style={{
